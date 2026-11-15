@@ -163,7 +163,6 @@ function renderAnimatedPreview(value){
  });
 }
 $("message").addEventListener("input",()=>renderAnimatedPreview($("message").value));
-$("aiReply").addEventListener("input",()=>renderAnimatedPreview($("aiReply").value));
 function makeMessage(){
  const name=$("recipient").value.trim();
  const extra=$("custom").value.trim();
