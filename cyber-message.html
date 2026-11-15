@@ -109,12 +109,20 @@ footer{margin-top:18px;font-size:12px;color:#a5b4fc;text-align:center;line-heigh
 <button class="secondary" type="button" onclick="copyMessage()">COPY MESSAGE</button>
 <button type="button" onclick="shareMessage()">SHARE MESSAGE</button>
 </div>
+<div class="actions">
+<button type="button" onclick="createAnimatedGif()">CREATE ANIMATED GIF</button>
+<button class="secondary" type="button" onclick="shareAnimatedGif()">SHARE GIF</button>
+</div>
+<p class="panel-hint">Gumagawa ito ng tunay na animated GIF file. Sa Android share menu, piliin ang Messenger o Messages kung available. Para sa SMS, text lang ang suportado; kailangan ng MMS para sa larawan/GIF.</p>
 <button class="secondary" type="button" onclick="openSMS()">OPEN SMS APP</button>
 <p id="status" role="status" aria-live="polite"></p>
 <p class="note"><small>Sharing opens your device's share menu. Choose Messenger if it is available. SMS opens your messaging app with the text prepared; you must review and press Send yourself.</small></p>
 <footer>MY CYBER LAB • CREATE • CONNECT • SHARE<br>Send respectful messages only to people who welcome them.</footer>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
 <script>
+let latestGifBlob=null;
+let latestGifUrl=null;
 const $=id=>document.getElementById(id);
 const messageChoices={
  glitch:[
@@ -202,6 +210,70 @@ async function shareMessage(){
   try{await navigator.share({text:value});$("status").textContent="Share menu opened.";}
   catch(e){if(e.name!=="AbortError")$("status").textContent="Sharing was not available. Use Copy Message instead.";}
  }else{$("status").textContent="Your browser does not support direct sharing. Use Copy Message, then paste it in Messenger.";}
+}
+function drawGifFrame(ctx,lines,width,height,frame){
+ const bg=ctx.createLinearGradient(0,0,width,height);
+ bg.addColorStop(0,"#07172d");bg.addColorStop(.55,"#17264b");bg.addColorStop(1,"#21183e");
+ ctx.fillStyle=bg;ctx.fillRect(0,0,width,height);
+ ctx.strokeStyle="#67e8f9";ctx.lineWidth=3;ctx.strokeRect(8,8,width-16,height-16);
+ ctx.save();ctx.globalAlpha=.28;
+ const sweepX=((frame/12)*width*1.5)-width*.25;
+ const glow=ctx.createLinearGradient(sweepX-70,0,sweepX+70,0);
+ glow.addColorStop(0,"rgba(103,232,249,0)");glow.addColorStop(.5,"rgba(240,171,252,.9)");glow.addColorStop(1,"rgba(103,232,249,0)");
+ ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);ctx.restore();
+ ctx.textAlign="center";ctx.textBaseline="middle";
+ ctx.font="bold 22px Arial";ctx.fillStyle="#a5f3fc";ctx.shadowColor="#22d3ee";ctx.shadowBlur=14;
+ ctx.fillText("⚡ MY CYBER LAB ⚡",width/2,42);
+ ctx.shadowBlur=0;
+ const lineHeight=34;const total=lines.length*lineHeight;
+ let y=Math.max(90,(height-total)/2);
+ ctx.font="bold 25px Arial";ctx.fillStyle="#f8fafc";ctx.shadowColor="#67e8f9";ctx.shadowBlur=frame%2?13:6;
+ lines.forEach((line,i)=>ctx.fillText(line,width/2,y+i*lineHeight,width-48));
+ ctx.shadowBlur=0;
+ ctx.font="22px Arial";ctx.fillStyle="#e9d5ff";
+ ctx.fillText(["✨","💙","🌟","🚀"][frame%4],width/2,height-38);
+}
+function wrapGifText(ctx,text,maxWidth){
+ const words=text.split(/\s+/);const lines=[];let line="";
+ words.forEach(word=>{
+  const test=line?line+" "+word:word;
+  if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}else line=test;
+ });
+ if(line)lines.push(line);
+ return lines.slice(0,12);
+}
+async function createAnimatedGif(){
+ const textValue=$("message").value.trim();
+ if(!textValue){$("status").textContent="Gumawa muna o magsulat ng mensahe.";return;}
+ if(typeof GIF==="undefined"){$("status").textContent="Hindi ma-load ang GIF creator. Suriin ang internet connection at subukan ulit.";return;}
+ $("status").textContent="Ginagawa ang animated GIF... hintayin matapos.";
+ const canvas=document.createElement("canvas");canvas.width=600;
+ const measure=canvas.getContext("2d");measure.font="bold 25px Arial";
+ const lines=wrapGifText(measure,textValue,540);
+ canvas.height=Math.max(260,Math.min(720,150+lines.length*38));
+ const ctx=canvas.getContext("2d");
+ const gif=new GIF({workers:2,quality:10,width:canvas.width,height:canvas.height,workerScript:"https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js"});
+ for(let frame=0;frame<12;frame++){drawGifFrame(ctx,lines,canvas.width,canvas.height,frame);gif.addFrame(ctx,{copy:true,delay:140});}
+ gif.on("finished",blob=>{
+  latestGifBlob=blob;
+  if(latestGifUrl)URL.revokeObjectURL(latestGifUrl);
+  latestGifUrl=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=latestGifUrl;a.download="my-cyber-lab-message.gif";document.body.appendChild(a);a.click();a.remove();
+  $("status").textContent="Tapos na! Na-download ang animated GIF. Pindutin ang SHARE GIF para ipadala sa Messenger o compatible na app.";
+ });
+ gif.on("abort",()=>{$("status").textContent="Hindi natapos ang paggawa ng GIF. Subukan ulit.";});
+ try{gif.render();}catch(err){$("status").textContent="May problema sa paggawa ng GIF. Subukan ulit.";console.error(err);}
+}
+async function shareAnimatedGif(){
+ if(!latestGifBlob){$("status").textContent="Pindutin muna ang CREATE ANIMATED GIF.";return;}
+ const file=new File([latestGifBlob],"my-cyber-lab-message.gif",{type:"image/gif"});
+ if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+  try{await navigator.share({files:[file],title:"MY CYBER LAB animated message",text:"Made with MY CYBER LAB"});$("status").textContent="Binuksan ang share menu. Piliin ang Messenger o compatible na app.";}
+  catch(err){if(err.name!=="AbortError")$("status").textContent="Hindi ma-share ang GIF. Gamitin ang na-download na file at i-attach ito sa Messenger.";}
+ }else{
+  $("status").textContent="Hindi suportado ng browser ang direct GIF sharing. Na-download na ang GIF; i-attach ito sa Messenger.";
+  if(latestGifUrl)window.open(latestGifUrl,"_blank");
+ }
 }
 function openSMS(){
  const value=$("message").value.trim();
