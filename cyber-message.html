@@ -38,13 +38,18 @@ footer{margin-top:18px;font-size:12px;color:#a5b4fc;text-align:center;line-heigh
 .live-emoji span{display:inline-block;animation:emojiFloat 2.8s ease-in-out infinite;filter:drop-shadow(0 0 8px #67e8f9aa)}
 .live-emoji span:nth-child(2){animation-delay:.35s}.live-emoji span:nth-child(3){animation-delay:.7s}.live-emoji span:nth-child(4){animation-delay:1.05s}.live-emoji span:nth-child(5){animation-delay:1.4s}
 @keyframes emojiFloat{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 5px #67e8f988)}50%{transform:translateY(-9px) scale(1.16);filter:drop-shadow(0 0 13px #f0abfc)}}
-.animated-preview{min-height:90px;margin:10px 0 14px;padding:14px;border:1px solid #67e8f977;border-radius:12px;background:linear-gradient(120deg,#07172d,#17264b,#21183e);color:#e0f2fe;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 0 18px #38bdf51c}
-.animated-preview .letter{display:inline-block;opacity:0;transform:translateY(8px);animation:letterGlow .48s ease forwards;animation-delay:var(--delay);text-shadow:0 0 9px #67e8f9aa}
-@keyframes letterGlow{to{opacity:1;transform:translateY(0)}}
+.animated-preview{position:relative;isolation:isolate;min-height:90px;margin:10px 0 14px;padding:14px;border:1px solid #67e8f9aa;border-radius:12px;background:linear-gradient(120deg,#07172d,#17264b,#21183e);color:#e0f2fe;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 0 18px #38bdf533,0 0 16px #22d3ee33}
+.animated-preview:before{content:"";position:absolute;z-index:0;top:0;left:-45%;width:34%;height:100%;background:linear-gradient(90deg,transparent,#67e8f955,#f0abfc88,transparent);transform:skewX(-18deg);animation:previewSweep 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes previewSweep{0%{left:-45%}65%,100%{left:120%}}
+.animated-preview .letter{position:relative;z-index:1;display:inline-block;opacity:0;transform:translateY(8px);animation:letterReveal .55s ease forwards,letterPulse 2.6s ease-in-out infinite;animation-delay:var(--delay),calc(var(--delay) + .55s);text-shadow:0 0 9px #67e8f9aa}
+@keyframes letterReveal{to{opacity:1;transform:translateY(0)}}
+@keyframes letterPulse{0%,100%{text-shadow:0 0 5px #67e8f988}50%{text-shadow:0 0 13px #67e8f9,0 0 20px #c084fc;color:#fff}}
+.animated-preview .emoji-letter{animation:emojiPop 1.65s ease-in-out infinite;animation-delay:var(--delay);filter:drop-shadow(0 0 9px #f0abfc)}
+@keyframes emojiPop{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.22)}}
 .preview-caption{font-size:11px;color:#a5f3fc;letter-spacing:1px;text-transform:uppercase;margin:8px 0 4px}
 .panel-heading{animation:headingPulse 3.5s ease-in-out infinite}
 @keyframes headingPulse{0%,100%{text-shadow:0 0 8px #22d3ee55}50%{text-shadow:0 0 18px #22d3ee,0 0 30px #a78bfa}}
-@media(prefers-reduced-motion:reduce){.live-emoji span,.animated-preview .letter,.panel-heading{animation:none!important;opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.panel-heading{animation:none!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -153,11 +158,13 @@ function renderAnimatedPreview(value){
  const preview=$("animatedPreview");
  preview.textContent="";
  if(!value){preview.textContent="Your generated message will appear here. ✨";return;}
- Array.from(value).forEach((char,index)=>{
+ const chars=typeof Intl!=="undefined"&&Intl.Segmenter?Array.from(new Intl.Segmenter(undefined,{granularity:"grapheme"}).segment(value),part=>part.segment):Array.from(value);
+ chars.forEach((char,index)=>{
   if(char==="\n"){preview.appendChild(document.createElement("br"));return;}
   const span=document.createElement("span");
-  span.className="letter";
-  span.style.setProperty("--delay",((index%35)*18)+"ms");
+  const isEmoji=/\p{Extended_Pictographic}/u.test(char);
+  span.className=isEmoji?"letter emoji-letter":"letter";
+  span.style.setProperty("--delay",((index%35)*24)+"ms");
   span.textContent=char===" "?"\u00a0":char;
   preview.appendChild(span);
  });
