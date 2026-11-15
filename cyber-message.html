@@ -30,7 +30,7 @@ footer{margin-top:18px;font-size:12px;color:#94a3b8;text-align:center;line-heigh
 <h2>CYBER MESSAGE STUDIO</h2>
 <p class="intro">Create a unique cyber-style message, personalize it, then copy or share it with your friends.</p>
 <label for="recipient">Recipient name (optional)</label>
-<input id="recipient" maxlength="40" placeholder="Example: Alex">
+<input id="recipient" maxlength="40" list="recipientIdeas" placeholder="Pumili o ilagay ang pangalan / tawag"><datalist id="recipientIdeas"><option value="Friend"><option value="Best Friend"><option value="Mom"><option value="Dad"><option value="Brother"><option value="Sister"><option value="Family"><option value="Love"><option value="Classmate"><option value="Teacher"></datalist>
 <label for="style">Choose message style</label>
 <select id="style">
 <option value="glitch">Neon Glitch</option>
@@ -40,8 +40,10 @@ footer{margin-top:18px;font-size:12px;color:#94a3b8;text-align:center;line-heigh
 <option value="thanks">Thank You</option>
 <option value="goodnight">Good Night</option>
 </select>
+<label for="version">Choose a message (optional)</label>
+<select id="version"><option value="0">Message 1</option><option value="1">Message 2</option><option value="2">Message 3</option></select>
 <label for="custom">Add your own thought (optional)</label>
-<input id="custom" maxlength="180" placeholder="Write a short personal line">
+<input id="custom" maxlength="180" list="thoughtIdeas" placeholder="Pumili o sumulat ng sariling thought"><datalist id="thoughtIdeas"><option value="Ingat ka palagi at God bless!"><option value="Proud ako sa iyo. Keep going!"><option value="Salamat sa pagiging mabuting kaibigan."><option value="Sana matupad ang mga pangarap mo."><option value="Nandito lang ako kung kailangan mo ng kausap."><option value="You deserve happiness and success."><option value="Keep smiling and stay positive!"><option value="Wishing you peace, love, and good health."></datalist>
 <button type="button" onclick="makeMessage()">GENERATE CYBER MESSAGE</button>
 <label for="message">Your message — you can edit it</label>
 <textarea id="message" maxlength="1200" placeholder="Your generated message will appear here."></textarea>
@@ -56,21 +58,54 @@ footer{margin-top:18px;font-size:12px;color:#94a3b8;text-align:center;line-heigh
 </main>
 <script>
 const $=id=>document.getElementById(id);
+const messageChoices={
+ glitch:[
+  "╔══ ⚡ CYBER SIGNAL ⚡ ══╗\\n{hello}\\nA little positive energy is heading your way. Stay curious, stay brilliant, and keep shining in your own way. ✨\\n╚══ TRANSMISSION COMPLETE ══╝",
+  "⚡ SYSTEM ONLINE: GOOD VIBES\\n{hello}\\nSending you strength, courage, and a fresh burst of inspiration. Keep being uniquely you! 💫",
+  "💻 MESSAGE RECEIVED\\n{hello}\\nYour next chapter can be amazing. Keep learning, keep growing, and never stop believing in yourself. 🚀"
+ ],
+ friendly:[
+  "🌈 {hello}\\nHope your day brings you smiles, good news, and plenty of reasons to be happy. Sending good vibes your way! 💙",
+  "☀️ {hello}\\nJust stopping by to say hello. Hope everything is going well and that something wonderful happens today!",
+  "😊 {hello}\\nMay your day be light, your heart be happy, and your worries be few. Have a lovely day!"
+ ],
+ encourage:[
+  "🚀 {hello}\\nKeep moving forward. Every small step is progress, every challenge is a lesson, and your effort matters. You can do this! 💪",
+  "🌟 {hello}\\nDo not give up on yourself. You are learning, growing, and getting stronger with every step. One day at a time!",
+  "🔥 {hello}\\nHard days do not last forever. Trust your effort, believe in your ability, and keep going. Your story is still being written!"
+ ],
+ birthday:[
+  "🎉 HAPPY BIRTHDAY{upperName}! 🎂\\nWishing you a bright year filled with happiness, good health, new adventures, and dreams coming true. 🌟",
+  "🥳 HAPPY BIRTHDAY{upperName}!\\nMay your special day be full of laughter, love, wonderful surprises, and unforgettable memories!",
+  "🎂 Cheers to another year{upperName}!\\nMay you receive countless blessings and have the courage to chase every dream. Enjoy your day!"
+ ],
+ thanks:[
+  "💙 {hello}\\nJust sending a special thank-you. Your kindness and support mean a lot. Keep being awesome! 🙏",
+  "🌷 {hello}\\nThank you for being there and for the little things you do. I appreciate you more than words can say.",
+  "✨ {hello}\\nMaraming salamat sa oras, tulong, at kabutihan mo. Hindi ko iyon nakakalimutan. I truly appreciate you!"
+ ],
+ goodnight:[
+  "🌙 {hello}\\nPower down the worries, recharge your energy, and wake up ready for a fresh new day. Sweet dreams! ✨",
+  "🌌 {hello}\\nGood night! Iwan muna ang pagod at alalahanin. Pahinga nang mabuti at sana maganda ang panaginip mo.",
+  "💤 {hello}\\nMay your night be peaceful and your tomorrow brighter. Sleep well and take care always!"
+ ]
+};
+function updateMessageChoices(){
+ const choices=messageChoices[$("style").value]||messageChoices.glitch;
+ $("version").innerHTML=choices.map((_,i)=>'<option value="'+i+'">Message '+(i+1)+'</option>').join("");
+}
+$("style").addEventListener("change",updateMessageChoices);
+updateMessageChoices();
 function makeMessage(){
  const name=$("recipient").value.trim();
  const extra=$("custom").value.trim();
- const hello=name?"Hey "+name+"!":"Hey there!";
- const styles={
-  glitch:"╔══ ⚡ CYBER SIGNAL ⚡ ══╗\n"+hello+"\nYou just received a little positive energy from MY CYBER LAB. Stay curious, stay brilliant, and keep shining in your own way. ✨\n╚══ TRANSMISSION COMPLETE ══╝",
-  friendly:"🌈 "+hello+"\nSending good vibes your way! Hope your day brings you smiles, good news, and plenty of reasons to be happy. 💙",
-  encourage:"🚀 "+hello+"\nKeep moving forward. Every small step is progress, every challenge is a lesson, and your effort matters. You can do this! 💪",
-  birthday:"🎉 HAPPY BIRTHDAY"+(name?" "+name.toUpperCase():"")+"! 🎂\nWishing you a bright year filled with happiness, good health, new adventures, and dreams coming true. 🌟",
-  thanks:"💙 "+hello+"\nJust sending a special thank-you. Your kindness and support mean a lot. Keep being awesome! 🙏",
-  goodnight:"🌙 "+hello+"\nPower down the worries, recharge your energy, and wake up ready for a fresh new day. Sweet dreams! ✨"
- };
- let result=styles[$("style").value]||styles.glitch;
- if(extra)result+="\n\n"+extra;
- result+="\n\n— MY CYBER LAB";
+ const hello=name?"Hello, "+name+"!":"Hello there!";
+ const key=$("style").value;
+ const choices=messageChoices[key]||messageChoices.glitch;
+ let result=choices[Number($("version").value)||0];
+ result=result.replaceAll("{hello}",hello).replaceAll("{upperName}",name?" "+name.toUpperCase():"");
+ if(extra)result+="\\n\\n"+extra;
+ result+="\\n\\n— MY CYBER LAB";
  $("message").value=result;
  $("status").textContent="Your message is ready. You can edit it before sharing.";
 }
