@@ -242,27 +242,42 @@ function wrapGifText(ctx,text,maxWidth){
  if(line)lines.push(line);
  return lines.slice(0,30);
 }
+let gifWorkerBlobUrl=null;
+async function getGifWorkerUrl(){
+ if(gifWorkerBlobUrl)return gifWorkerBlobUrl;
+ const workerResponse=await fetch("https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js",{cache:"force-cache"});
+ if(!workerResponse.ok)throw new Error("Hindi ma-download ang GIF worker ("+workerResponse.status+").");
+ const workerCode=await workerResponse.text();
+ gifWorkerBlobUrl=URL.createObjectURL(new Blob([workerCode],{type:"text/javascript"}));
+ return gifWorkerBlobUrl;
+}
 async function createAnimatedGif(){
  const textValue=$("message").value.trim();
  if(!textValue){$("status").textContent="Gumawa muna o magsulat ng mensahe.";return;}
  if(typeof GIF==="undefined"){$("status").textContent="Hindi ma-load ang GIF creator. Suriin ang internet connection at subukan ulit.";return;}
- $("status").textContent="Ginagawa ang animated GIF... hintayin matapos.";
- const canvas=document.createElement("canvas");canvas.width=600;
- const measure=canvas.getContext("2d");measure.font="bold 25px Arial";
- const lines=wrapGifText(measure,textValue,540);
- canvas.height=Math.max(260,Math.min(1350,150+lines.length*38));
- const ctx=canvas.getContext("2d");
- const gif=new GIF({workers:2,quality:10,width:canvas.width,height:canvas.height,workerScript:"https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js"});
- for(let frame=0;frame<12;frame++){drawGifFrame(ctx,lines,canvas.width,canvas.height,frame);gif.addFrame(ctx,{copy:true,delay:140});}
- gif.on("finished",blob=>{
-  latestGifBlob=blob;
-  if(latestGifUrl)URL.revokeObjectURL(latestGifUrl);
-  latestGifUrl=URL.createObjectURL(blob);
-  const a=document.createElement("a");a.href=latestGifUrl;a.download="my-cyber-lab-message.gif";document.body.appendChild(a);a.click();a.remove();
-  $("status").textContent="Tapos na! Na-download ang animated GIF. Pindutin ang SHARE GIF para ipadala sa Messenger o compatible na app.";
- });
- gif.on("abort",()=>{$("status").textContent="Hindi natapos ang paggawa ng GIF. Subukan ulit.";});
- try{gif.render();}catch(err){$("status").textContent="May problema sa paggawa ng GIF. Subukan ulit.";console.error(err);}
+ $("status").textContent="Inihahanda ang GIF creator...";
+ try{
+  const workerUrl=await getGifWorkerUrl();
+  const canvas=document.createElement("canvas");canvas.width=600;
+  const measure=canvas.getContext("2d");measure.font="bold 25px Arial";
+  const lines=wrapGifText(measure,textValue,540);
+  canvas.height=Math.max(260,Math.min(1350,150+lines.length*38));
+  const ctx=canvas.getContext("2d");
+  const gif=new GIF({workers:2,quality:10,width:canvas.width,height:canvas.height,workerScript:workerUrl});
+  for(let frame=0;frame<12;frame++){drawGifFrame(ctx,lines,canvas.width,canvas.height,frame);gif.addFrame(ctx,{copy:true,delay:140});}
+  gif.on("finished",blob=>{
+   latestGifBlob=blob;
+   if(latestGifUrl)URL.revokeObjectURL(latestGifUrl);
+   latestGifUrl=URL.createObjectURL(blob);
+   const a=document.createElement("a");a.href=latestGifUrl;a.download="my-cyber-lab-message.gif";document.body.appendChild(a);a.click();a.remove();
+   $("status").textContent="Tapos na! Na-download ang animated GIF. Pindutin ang SHARE GIF para ipadala sa Messenger o compatible na app.";
+  });
+  gif.on("abort",()=>{$("status").textContent="Hindi natapos ang paggawa ng GIF. Subukan ulit.";});
+  gif.render();
+ }catch(err){
+  console.error("GIF creation failed:",err);
+  $("status").textContent="GIF error: "+(err&&err.message?err.message:"Hindi ma-load ang GIF worker. Suriin ang internet at subukan ulit.");
+ }
 }
 async function shareAnimatedGif(){
  if(!latestGifBlob){$("status").textContent="Pindutin muna ang CREATE ANIMATED GIF.";return;}
