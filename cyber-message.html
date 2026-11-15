@@ -7,21 +7,34 @@
 <title>MY CYBER LAB - Cyber Message Studio</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:20px;font-family:Arial,sans-serif;color:#f8fafc;background:radial-gradient(circle at top,#182b59 0,#0b1224 48%,#060914 100%);min-height:100vh}
-main{max-width:620px;margin:24px auto;padding:24px;background:#101b31;border:1px solid #31517b;border-radius:20px;box-shadow:0 0 28px #0ea5e933}
-h1{text-align:center;color:#67e8f9;letter-spacing:1.5px;text-shadow:0 0 14px #06b6d4}
-h2{text-align:center;margin-top:4px}
-.intro,.note{color:#cbd5e1;line-height:1.55}
-label{display:block;margin:16px 0 7px;font-weight:bold;color:#bfdbfe}
-input,select,textarea{width:100%;padding:13px;border:1px solid #45618a;border-radius:10px;background:#071326;color:#fff;font:inherit}
-textarea{min-height:170px;resize:vertical;line-height:1.55}
-button{width:100%;padding:14px;margin-top:13px;border:0;border-radius:10px;font-weight:bold;font-size:15px;color:#061225;background:linear-gradient(90deg,#67e8f9,#a78bfa,#f0abfc);cursor:pointer}
-button.secondary{background:#1d3558;color:#e0f2fe;border:1px solid #4772a8}
+body{margin:0;padding:20px;font-family:Arial,sans-serif;color:#f8fafc;background:radial-gradient(circle at 15% 0%,#243d78 0,#101a38 38%,#070b18 100%);min-height:100vh}
+main{position:relative;overflow:hidden;max-width:620px;margin:24px auto;padding:24px;background:linear-gradient(145deg,#142544ee,#10152dee);border:1px solid #5377b5;border-radius:22px;box-shadow:0 0 32px #0ea5e944,0 0 70px #8b5cf622}
+main:before{content:"";position:absolute;top:-45%;left:-70%;width:45%;height:190%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,#ffffff12,transparent);animation:lightSweep 8s ease-in-out infinite;pointer-events:none}
+@keyframes lightSweep{0%,35%{left:-75%}75%,100%{left:135%}}
+h1{text-align:center;color:#a5f3fc;letter-spacing:1.5px;text-shadow:0 0 10px #06b6d4,0 0 24px #3b82f6}
+h2{text-align:center;margin-top:4px;color:#e9d5ff;text-shadow:0 0 14px #a78bfa}
+.intro,.note{color:#d4e3fa;line-height:1.55}
+label{display:block;margin:16px 0 7px;font-weight:bold;color:#c4e8ff}
+input,select,textarea{width:100%;padding:13px;border:1px solid #5877a5;border-radius:10px;background:#08152b;color:#fff;font:inherit;transition:border-color .25s,box-shadow .25s,transform .25s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#67e8f9;box-shadow:0 0 0 3px #22d3ee22,0 0 18px #22d3ee33}
+textarea{min-height:170px;resize:vertical;line-height:1.6}
+button{position:relative;overflow:hidden;width:100%;padding:14px;margin-top:13px;border:1px solid #dbeafe55;border-radius:11px;font-weight:bold;font-size:15px;color:#071326;background:linear-gradient(100deg,#67e8f9,#a5b4fc,#f0abfc,#67e8f9);background-size:220% 100%;box-shadow:0 5px 20px #38bdf833;cursor:pointer;transition:transform .25s,box-shadow .25s,background-position .5s}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 26px #67e8f966;background-position:100% 0}
+button.secondary{background:linear-gradient(100deg,#1d3558,#263f70);background-size:200% 100%;color:#e0f2fe;border:1px solid #6b91c9}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .actions button{margin-top:10px}
-small{color:#a5b4fc}
+.panel{position:relative;margin-top:18px;padding:15px;border-radius:15px;overflow:hidden}
+.message-panel{border:1px solid #38bdf899;background:linear-gradient(135deg,#0b2944,#17244b);box-shadow:inset 0 0 22px #38bdf51c,0 0 22px #0ea5e922}
+.ai-panel{border:1px solid #c084fc88;background:linear-gradient(135deg,#251743,#17264b);box-shadow:inset 0 0 22px #c084fc1c,0 0 22px #a855f722}
+.panel-heading{font-weight:800;letter-spacing:.7px;margin:0 0 8px;color:#a5f3fc;text-shadow:0 0 12px #22d3ee88}
+.ai-panel .panel-heading{color:#e9d5ff;text-shadow:0 0 12px #c084fc88}
+.panel-hint{font-size:12px;color:#cbd5e1;margin:0 0 10px}
+.panel textarea{background:#061326dd;border-color:#4c83b8}
+.ai-panel textarea{background:#100d27dd;border-color:#8862b8}
+small{color:#c4b5fd}
 #status{min-height:22px;color:#86efac}
-footer{margin-top:18px;font-size:12px;color:#94a3b8;text-align:center;line-height:1.5}
+footer{margin-top:18px;font-size:12px;color:#a5b4fc;text-align:center;line-height:1.5}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -61,8 +74,18 @@ footer{margin-top:18px;font-size:12px;color:#94a3b8;text-align:center;line-heigh
 <label for="custom">Add your own thought (optional)</label>
 <input id="custom" maxlength="180" list="thoughtIdeas" placeholder="Pumili o sumulat ng sariling thought"><datalist id="thoughtIdeas"><option value="Ingat ka palagi at God bless!"><option value="Proud ako sa iyo. Keep going!"><option value="Salamat sa pagiging mabuting kaibigan."><option value="Sana matupad ang mga pangarap mo."><option value="Nandito lang ako kung kailangan mo ng kausap."><option value="You deserve happiness and success."><option value="Keep smiling and stay positive!"><option value="Wishing you peace, love, and good health."></datalist>
 <button type="button" onclick="makeMessage()">GENERATE CYBER MESSAGE</button>
+<section class="panel message-panel" aria-labelledby="messageHeading">
+<p class="panel-heading" id="messageHeading">📩 MESSAGE TO RECIPIENT</p>
+<p class="panel-hint">Ito ang mensaheng gagawin at ipapadala mo. Maaari mo pa itong i-edit.</p>
 <label for="message">Your message — you can edit it</label>
 <textarea id="message" maxlength="1200" placeholder="Your generated message will appear here."></textarea>
+</section>
+<section class="panel ai-panel" aria-labelledby="aiHeading">
+<p class="panel-heading" id="aiHeading">🤖 AI RESPONSE</p>
+<p class="panel-hint">I-paste rito ang sagot na natanggap mo mula sa AI para hiwalay at madaling basahin. Hindi ito awtomatikong konektado sa AI.</p>
+<label for="aiReply">AI reply (optional)</label>
+<textarea id="aiReply" maxlength="2000" placeholder="Paste the AI response here..."></textarea>
+</section>
 <div class="actions">
 <button class="secondary" type="button" onclick="copyMessage()">COPY MESSAGE</button>
 <button type="button" onclick="shareMessage()">SHARE MESSAGE</button>
@@ -127,6 +150,7 @@ function makeMessage(){
  if(extra)result+="\n\n"+extra;
  result+="\n\n— MY CYBER LAB";
  $("message").value=result;
+ $("messageHeading").textContent="📩 MESSAGE TO "+(name?name.toUpperCase():"RECIPIENT");
  $("status").textContent="Your message is ready. You can edit it before sharing.";
 }
 async function copyMessage(){
