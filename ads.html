@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MY CYBER LAB - Ads Generator</title>
+<style>
+body{font-family:Arial,sans-serif;background:#101827;color:white;padding:20px}
+main{max-width:480px;margin:auto;background:#1e293b;padding:20px;border-radius:15px}
+h1{color:#38bdf8;text-align:center}
+h2{text-align:center}
+label{display:block;margin-top:15px}
+input,textarea{box-sizing:border-box;width:100%;padding:12px;margin-top:7px;border-radius:8px}
+textarea{min-height:90px}
+button{width:100%;padding:13px;margin-top:15px;background:#0284c7;color:white;border:0;border-radius:8px;font-weight:bold}
+#result{overflow-wrap:anywhere}
+small{color:#cbd5e1}
+a{color:#7dd3fc;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<main>
+<h1>MY CYBER LAB</h1>
+<h2>Advertising URL Generator</h2>
+<small>Create a shareable promotional message link.</small>
+<label>Advertisement Title</label>
+<input id="title" placeholder="Example: Special Offer">
+<label>Advertisement Message</label>
+<textarea id="message" placeholder="Write your promotion here"></textarea>
+<label>Advertisement Website (optional)</label>
+<input id="website" type="url" placeholder="https://example.com">
+<button onclick="generate()">GENERATE AD URL</button>
+<p id="result"></p>
+<button id="copy" hidden onclick="copyLink()">COPY URL</button>
+<p><small>Sponsored advertisement. Share only with people who agree to receive it.</small></p>
+</main>
+<script>
+let generatedLink="";
+function generate(){
+ const title=document.getElementById("title").value.trim();
+ const message=document.getElementById("message").value.trim();
+ const website=document.getElementById("website").value.trim();
+ if(!title||!message){alert("Enter an advertisement title and message.");return;}
+ if(website){
+  try{
+   const url=new URL(website);
+   if(!["https:","http:"].includes(url.protocol)) throw new Error();
+  }catch(e){alert("Enter a valid website beginning with https:// or http://");return;}
+ }
+ const params=new URLSearchParams({title,message,website});
+ generatedLink=location.origin+location.pathname+"?"+params.toString();
+ document.getElementById("result").textContent=generatedLink;
+ document.getElementById("copy").hidden=false;
+}
+async function copyLink(){
+ try{
+  await navigator.clipboard.writeText(generatedLink);
+  alert("Advertisement URL copied!");
+ }catch(e){
+  alert("Copy is unavailable. Select and copy the displayed URL.");
+ }
+}
+const p=new URLSearchParams(location.search);
+if(p.has("title")){
+ document.querySelector("main").innerHTML=
+ "<h1>MY CYBER LAB</h1><small>SPONSORED ADVERTISEMENT</small><h2>"+
+ escapeText(p.get("title"))+"</h2><p>"+escapeText(p.get("message")||"")+
+ "</p>"+(p.get("website")?'<p><a target="_blank" rel="noopener noreferrer" href="'+safeLink(p.get("website"))+'">Visit advertiser website</a></p>':"");
+}
+function escapeText(s){
+ const d=document.createElement("div");d.textContent=s;return d.innerHTML;
+}
+function safeLink(s){
+ try{const u=new URL(s);return ["https:","http:"].includes(u.protocol)?u.href:"#";}
+ catch(e){return "#";}
+}
+</script>
+</body>
+</html>
