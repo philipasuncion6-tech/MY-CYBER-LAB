@@ -60,34 +60,34 @@ footer{margin-top:18px;font-size:12px;color:#94a3b8;text-align:center;line-heigh
 const $=id=>document.getElementById(id);
 const messageChoices={
  glitch:[
-  "╔══ ⚡ CYBER SIGNAL ⚡ ══╗\\n{hello}\\nA little positive energy is heading your way. Stay curious, stay brilliant, and keep shining in your own way. ✨\\n╚══ TRANSMISSION COMPLETE ══╝",
-  "⚡ SYSTEM ONLINE: GOOD VIBES\\n{hello}\\nSending you strength, courage, and a fresh burst of inspiration. Keep being uniquely you! 💫",
-  "💻 MESSAGE RECEIVED\\n{hello}\\nYour next chapter can be amazing. Keep learning, keep growing, and never stop believing in yourself. 🚀"
+  "╔══ ⚡ CYBER SIGNAL ⚡ ══╗\n{hello}\nA little positive energy is heading your way. Stay curious, stay brilliant, and keep shining in your own way. ✨\n╚══ TRANSMISSION COMPLETE ══╝",
+  "⚡ SYSTEM ONLINE: GOOD VIBES\n{hello}\nSending you strength, courage, and a fresh burst of inspiration. Keep being uniquely you! 💫",
+  "💻 MESSAGE RECEIVED\n{hello}\nYour next chapter can be amazing. Keep learning, keep growing, and never stop believing in yourself. 🚀"
  ],
  friendly:[
-  "🌈 {hello}\\nHope your day brings you smiles, good news, and plenty of reasons to be happy. Sending good vibes your way! 💙",
-  "☀️ {hello}\\nJust stopping by to say hello. Hope everything is going well and that something wonderful happens today!",
-  "😊 {hello}\\nMay your day be light, your heart be happy, and your worries be few. Have a lovely day!"
+  "🌈 {hello}\nHope your day brings you smiles, good news, and plenty of reasons to be happy. Sending good vibes your way! 💙",
+  "☀️ {hello}\nJust stopping by to say hello. Hope everything is going well and that something wonderful happens today!",
+  "😊 {hello}\nMay your day be light, your heart be happy, and your worries be few. Have a lovely day!"
  ],
  encourage:[
-  "🚀 {hello}\\nKeep moving forward. Every small step is progress, every challenge is a lesson, and your effort matters. You can do this! 💪",
-  "🌟 {hello}\\nDo not give up on yourself. You are learning, growing, and getting stronger with every step. One day at a time!",
-  "🔥 {hello}\\nHard days do not last forever. Trust your effort, believe in your ability, and keep going. Your story is still being written!"
+  "🚀 {hello}\nKeep moving forward. Every small step is progress, every challenge is a lesson, and your effort matters. You can do this! 💪",
+  "🌟 {hello}\nDo not give up on yourself. You are learning, growing, and getting stronger with every step. One day at a time!",
+  "🔥 {hello}\nHard days do not last forever. Trust your effort, believe in your ability, and keep going. Your story is still being written!"
  ],
  birthday:[
-  "🎉 HAPPY BIRTHDAY{upperName}! 🎂\\nWishing you a bright year filled with happiness, good health, new adventures, and dreams coming true. 🌟",
-  "🥳 HAPPY BIRTHDAY{upperName}!\\nMay your special day be full of laughter, love, wonderful surprises, and unforgettable memories!",
-  "🎂 Cheers to another year{upperName}!\\nMay you receive countless blessings and have the courage to chase every dream. Enjoy your day!"
+  "🎉 HAPPY BIRTHDAY{upperName}! 🎂\nWishing you a bright year filled with happiness, good health, new adventures, and dreams coming true. 🌟",
+  "🥳 HAPPY BIRTHDAY{upperName}!\nMay your special day be full of laughter, love, wonderful surprises, and unforgettable memories!",
+  "🎂 Cheers to another year{upperName}!\nMay you receive countless blessings and have the courage to chase every dream. Enjoy your day!"
  ],
  thanks:[
-  "💙 {hello}\\nJust sending a special thank-you. Your kindness and support mean a lot. Keep being awesome! 🙏",
-  "🌷 {hello}\\nThank you for being there and for the little things you do. I appreciate you more than words can say.",
-  "✨ {hello}\\nMaraming salamat sa oras, tulong, at kabutihan mo. Hindi ko iyon nakakalimutan. I truly appreciate you!"
+  "💙 {hello}\nJust sending a special thank-you. Your kindness and support mean a lot. Keep being awesome! 🙏",
+  "🌷 {hello}\nThank you for being there and for the little things you do. I appreciate you more than words can say.",
+  "✨ {hello}\nMaraming salamat sa oras, tulong, at kabutihan mo. Hindi ko iyon nakakalimutan. I truly appreciate you!"
  ],
  goodnight:[
-  "🌙 {hello}\\nPower down the worries, recharge your energy, and wake up ready for a fresh new day. Sweet dreams! ✨",
-  "🌌 {hello}\\nGood night! Iwan muna ang pagod at alalahanin. Pahinga nang mabuti at sana maganda ang panaginip mo.",
-  "💤 {hello}\\nMay your night be peaceful and your tomorrow brighter. Sleep well and take care always!"
+  "🌙 {hello}\nPower down the worries, recharge your energy, and wake up ready for a fresh new day. Sweet dreams! ✨",
+  "🌌 {hello}\nGood night! Iwan muna ang pagod at alalahanin. Pahinga nang mabuti at sana maganda ang panaginip mo.",
+  "💤 {hello}\nMay your night be peaceful and your tomorrow brighter. Sleep well and take care always!"
  ]
 };
 function updateMessageChoices(){
@@ -104,8 +104,8 @@ function makeMessage(){
  const choices=messageChoices[key]||messageChoices.glitch;
  let result=choices[Number($("version").value)||0];
  result=result.replaceAll("{hello}",hello).replaceAll("{upperName}",name?" "+name.toUpperCase():"");
- if(extra)result+="\\n\\n"+extra;
- result+="\\n\\n— MY CYBER LAB";
+ if(extra)result+="\n\n"+extra;
+ result+="\n\n— MY CYBER LAB";
  $("message").value=result;
  $("status").textContent="Your message is ready. You can edit it before sharing.";
 }
