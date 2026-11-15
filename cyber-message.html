@@ -240,7 +240,7 @@ function wrapGifText(ctx,text,maxWidth){
   if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}else line=test;
  });
  if(line)lines.push(line);
- return lines.slice(0,12);
+ return lines.slice(0,30);
 }
 async function createAnimatedGif(){
  const textValue=$("message").value.trim();
@@ -250,7 +250,7 @@ async function createAnimatedGif(){
  const canvas=document.createElement("canvas");canvas.width=600;
  const measure=canvas.getContext("2d");measure.font="bold 25px Arial";
  const lines=wrapGifText(measure,textValue,540);
- canvas.height=Math.max(260,Math.min(720,150+lines.length*38));
+ canvas.height=Math.max(260,Math.min(1350,150+lines.length*38));
  const ctx=canvas.getContext("2d");
  const gif=new GIF({workers:2,quality:10,width:canvas.width,height:canvas.height,workerScript:"https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js"});
  for(let frame=0;frame<12;frame++){drawGifFrame(ctx,lines,canvas.width,canvas.height,frame);gif.addFrame(ctx,{copy:true,delay:140});}
