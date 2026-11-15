@@ -34,6 +34,17 @@ button.secondary{background:linear-gradient(100deg,#1d3558,#263f70);background-s
 small{color:#c4b5fd}
 #status{min-height:22px;color:#86efac}
 footer{margin-top:18px;font-size:12px;color:#a5b4fc;text-align:center;line-height:1.5}
+.live-emoji{display:flex;justify-content:center;gap:18px;margin:8px 0 14px;font-size:25px}
+.live-emoji span{display:inline-block;animation:emojiFloat 2.8s ease-in-out infinite;filter:drop-shadow(0 0 8px #67e8f9aa)}
+.live-emoji span:nth-child(2){animation-delay:.35s}.live-emoji span:nth-child(3){animation-delay:.7s}.live-emoji span:nth-child(4){animation-delay:1.05s}.live-emoji span:nth-child(5){animation-delay:1.4s}
+@keyframes emojiFloat{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 5px #67e8f988)}50%{transform:translateY(-9px) scale(1.16);filter:drop-shadow(0 0 13px #f0abfc)}}
+.animated-preview{min-height:90px;margin:10px 0 14px;padding:14px;border:1px solid #67e8f977;border-radius:12px;background:linear-gradient(120deg,#07172d,#17264b,#21183e);color:#e0f2fe;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 0 18px #38bdf51c}
+.animated-preview .letter{display:inline-block;opacity:0;transform:translateY(8px);animation:letterGlow .48s ease forwards;animation-delay:var(--delay);text-shadow:0 0 9px #67e8f9aa}
+@keyframes letterGlow{to{opacity:1;transform:translateY(0)}}
+.preview-caption{font-size:11px;color:#a5f3fc;letter-spacing:1px;text-transform:uppercase;margin:8px 0 4px}
+.panel-heading{animation:headingPulse 3.5s ease-in-out infinite}
+@keyframes headingPulse{0%,100%{text-shadow:0 0 8px #22d3ee55}50%{text-shadow:0 0 18px #22d3ee,0 0 30px #a78bfa}}
+@media(prefers-reduced-motion:reduce){.live-emoji span,.animated-preview .letter,.panel-heading{animation:none!important;opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -41,6 +52,7 @@ footer{margin-top:18px;font-size:12px;color:#a5b4fc;text-align:center;line-heigh
 <main>
 <h1>⚡ MY CYBER LAB ⚡</h1>
 <h2>CYBER MESSAGE STUDIO</h2>
+<div class="live-emoji" aria-label="Animated emojis"><span>✨</span><span>💙</span><span>😊</span><span>🌟</span><span>🚀</span></div>
 <p class="intro">Create a unique cyber-style message, personalize it, then copy or share it with your friends.</p>
 <label for="recipient">Recipient name (optional)</label>
 <input id="recipient" maxlength="40" list="recipientIdeas" placeholder="Pumili o ilagay ang pangalan / tawag"><datalist id="recipientIdeas"><option value="Friend"><option value="Best Friend"><option value="Mom"><option value="Dad"><option value="Brother"><option value="Sister"><option value="Family"><option value="Love"><option value="Child"><option value="Son"><option value="Daughter"><option value="Cousin"><option value="Classmate"><option value="Teacher"></datalist>
@@ -78,6 +90,8 @@ footer{margin-top:18px;font-size:12px;color:#a5b4fc;text-align:center;line-heigh
 <p class="panel-heading" id="messageHeading">📩 MESSAGE TO RECIPIENT</p>
 <p class="panel-hint">Ito ang mensaheng gagawin at ipapadala mo. Maaari mo pa itong i-edit.</p>
 <label for="message">Your message — you can edit it</label>
+<p class="preview-caption">✨ Live animated preview</p>
+<div id="animatedPreview" class="animated-preview" aria-live="polite">Your generated message will appear here. ✨</div>
 <textarea id="message" maxlength="1200" placeholder="Your generated message will appear here."></textarea>
 </section>
 <section class="panel ai-panel" aria-labelledby="aiHeading">
@@ -135,6 +149,21 @@ function updateMessageChoices(){
 }
 $("style").addEventListener("change",updateMessageChoices);
 updateMessageChoices();
+function renderAnimatedPreview(value){
+ const preview=$("animatedPreview");
+ preview.textContent="";
+ if(!value){preview.textContent="Your generated message will appear here. ✨";return;}
+ Array.from(value).forEach((char,index)=>{
+  if(char==="\n"){preview.appendChild(document.createElement("br"));return;}
+  const span=document.createElement("span");
+  span.className="letter";
+  span.style.setProperty("--delay",((index%35)*18)+"ms");
+  span.textContent=char===" "?"\u00a0":char;
+  preview.appendChild(span);
+ });
+}
+$("message").addEventListener("input",()=>renderAnimatedPreview($("message").value));
+$("aiReply").addEventListener("input",()=>renderAnimatedPreview($("aiReply").value));
 function makeMessage(){
  const name=$("recipient").value.trim();
  const extra=$("custom").value.trim();
@@ -150,6 +179,7 @@ function makeMessage(){
  if(extra)result+="\n\n"+extra;
  result+="\n\n— MY CYBER LAB";
  $("message").value=result;
+ renderAnimatedPreview(result);
  $("messageHeading").textContent="📩 MESSAGE TO "+(name?name.toUpperCase():"RECIPIENT");
  $("status").textContent="Your message is ready. You can edit it before sharing.";
 }
