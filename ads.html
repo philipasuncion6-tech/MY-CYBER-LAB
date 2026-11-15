@@ -3,51 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
 <title>MY CYBER LAB - Ads Generator</title>
 <style>
-body{font-family:Arial,sans-serif;background:#101827;color:white;padding:20px}
-main{max-width:480px;margin:auto;background:#1e293b;padding:20px;border-radius:15px}
-h1{color:#38bdf8;text-align:center}
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:linear-gradient(145deg,#0b1220,#172554);color:#f8fafc;padding:20px;min-height:100vh}
+main{max-width:520px;margin:24px auto;background:#1e293b;padding:22px;border:1px solid #334155;border-radius:18px;box-shadow:0 18px 45px #02061788}
+h1{color:#38bdf8;text-align:center;letter-spacing:1px}
 h2{text-align:center}
-label{display:block;margin-top:15px}
-input,textarea{box-sizing:border-box;width:100%;padding:12px;margin-top:7px;border-radius:8px}
-textarea{min-height:90px}
-button{width:100%;padding:13px;margin-top:15px;background:#0284c7;color:white;border:0;border-radius:8px;font-weight:bold}
-#result{overflow-wrap:anywhere}
-small{color:#cbd5e1}
+label{display:block;margin-top:15px;font-weight:bold}
+input,textarea{width:100%;padding:12px;margin-top:7px;border:1px solid #475569;border-radius:9px;background:#0f172a;color:white;font:inherit}
+textarea{min-height:100px;resize:vertical}
+button{width:100%;padding:13px;margin-top:15px;background:linear-gradient(90deg,#0284c7,#2563eb);color:white;border:0;border-radius:9px;font-weight:bold;font-size:15px}
+button:active{transform:scale(.99)}
+#result{overflow-wrap:anywhere;line-height:1.5;color:#bae6fd}
+small{color:#cbd5e1;line-height:1.5}
 a{color:#7dd3fc;overflow-wrap:anywhere}
+.ad-image{display:block;width:100%;max-height:340px;object-fit:contain;margin:18px auto;border-radius:12px;background:#0f172a}
+.ad-copy{white-space:pre-wrap;line-height:1.65}
 </style>
 </head>
 <body>
-<main>
+<main id="main">
 <h1>MY CYBER LAB</h1>
 <h2>Advertising URL Generator</h2>
-<small>Create a shareable promotional message link.</small>
-<label>Advertisement Title</label>
-<input id="title" placeholder="Example: Special Offer">
-<label>Advertisement Message</label>
-<textarea id="message" placeholder="Write your promotion here"></textarea>
-<label>Advertisement Website (optional)</label>
+<small>Create a shareable promotional page with your own image or logo.</small>
+<label for="title">Advertisement Title</label>
+<input id="title" maxlength="100" placeholder="Example: Special Offer">
+<label for="message">Advertisement Message</label>
+<textarea id="message" maxlength="1500" placeholder="Write your promotion here"></textarea>
+<label for="image">Advertisement Image URL (optional)</label>
+<input id="image" type="url" placeholder="https://example.com/banner.jpg">
+<label for="website">Advertisement Website (optional)</label>
 <input id="website" type="url" placeholder="https://example.com">
-<button onclick="generate()">GENERATE AD URL</button>
-<p id="result"></p>
-<button id="copy" hidden onclick="copyLink()">COPY URL</button>
-<p><small>Sponsored advertisement. Share only with people who agree to receive it.</small></p>
+<button type="button" onclick="generate()">GENERATE AD URL</button>
+<p id="result" aria-live="polite"></p>
+<button id="copy" hidden type="button" onclick="copyLink()">COPY URL</button>
+<p><small>Sponsored advertisement. Share only with people who agree to receive it. Use images and links you have permission to share.</small></p>
 </main>
 <script>
 let generatedLink="";
+function validHttpUrl(value){
+ try{
+  const url=new URL(value);
+  return ["https:","http:"].includes(url.protocol)?url.href:"";
+ }catch(e){return "";}
+}
 function generate(){
  const title=document.getElementById("title").value.trim();
  const message=document.getElementById("message").value.trim();
+ const image=document.getElementById("image").value.trim();
  const website=document.getElementById("website").value.trim();
  if(!title||!message){alert("Enter an advertisement title and message.");return;}
- if(website){
-  try{
-   const url=new URL(website);
-   if(!["https:","http:"].includes(url.protocol)) throw new Error();
-  }catch(e){alert("Enter a valid website beginning with https:// or http://");return;}
- }
- const params=new URLSearchParams({title,message,website});
+ const safeImage=image?validHttpUrl(image):"";
+ const safeWebsite=website?validHttpUrl(website):"";
+ if(image&&!safeImage){alert("Enter a valid image URL beginning with https:// or http://");return;}
+ if(website&&!safeWebsite){alert("Enter a valid website beginning with https:// or http://");return;}
+ const params=new URLSearchParams({title,message,image:safeImage,website:safeWebsite});
  generatedLink=location.origin+location.pathname+"?"+params.toString();
  document.getElementById("result").textContent=generatedLink;
  document.getElementById("copy").hidden=false;
@@ -60,20 +72,39 @@ async function copyLink(){
   alert("Copy is unavailable. Select and copy the displayed URL.");
  }
 }
-const p=new URLSearchParams(location.search);
-if(p.has("title")){
- document.querySelector("main").innerHTML=
- "<h1>MY CYBER LAB</h1><small>SPONSORED ADVERTISEMENT</small><h2>"+
- escapeText(p.get("title"))+"</h2><p>"+escapeText(p.get("message")||"")+
- "</p>"+(p.get("website")?'<p><a target="_blank" rel="noopener noreferrer" href="'+safeLink(p.get("website"))+'">Visit advertiser website</a></p>':"");
-}
 function escapeText(s){
  const d=document.createElement("div");d.textContent=s;return d.innerHTML;
 }
-function safeLink(s){
- try{const u=new URL(s);return ["https:","http:"].includes(u.protocol)?u.href:"#";}
- catch(e){return "#";}
+function showAdvertisement(){
+ const p=new URLSearchParams(location.search);
+ if(!p.has("title"))return;
+ const main=document.getElementById("main");
+ main.replaceChildren();
+ const heading=document.createElement("h1");heading.textContent="MY CYBER LAB";
+ const label=document.createElement("small");label.textContent="SPONSORED ADVERTISEMENT";
+ const title=document.createElement("h2");title.textContent=p.get("title")||"";
+ main.append(heading,label,title);
+ const imageUrl=p.get("image")?validHttpUrl(p.get("image")):"";
+ if(imageUrl){
+  const img=document.createElement("img");
+  img.className="ad-image";img.src=imageUrl;img.alt="Advertisement image";
+  img.referrerPolicy="no-referrer";
+  main.append(img);
+ }
+ const message=document.createElement("p");
+ message.className="ad-copy";message.textContent=p.get("message")||"";
+ main.append(message);
+ const website= p.get("website")?validHttpUrl(p.get("website")):"";
+ if(website){
+  const link=document.createElement("a");
+  link.href=website;link.target="_blank";link.rel="noopener noreferrer";
+  link.textContent="Visit advertiser website";
+  const paragraph=document.createElement("p");paragraph.append(link);main.append(paragraph);
+ }
+ const note=document.createElement("small");note.textContent="Sponsored advertisement";
+ main.append(note);
 }
+showAdvertisement();
 </script>
 </body>
 </html>
