@@ -42,6 +42,22 @@ footer{margin-top:18px;font-size:12px;color:#94a3b8;text-align:center;line-heigh
 </select>
 <label for="version">Choose a message (optional)</label>
 <select id="version"><option value="0">Message 1</option><option value="1">Message 2</option><option value="2">Message 3</option></select>
+<label for="emoji">Add an emoji (optional)</label>
+<select id="emoji">
+<option value="">No extra emoji</option><option value="✨">✨ Sparkle</option><option value="❤️">❤️ Love</option><option value="😊">😊 Smile</option><option value="🙏">🙏 Gratitude / Prayer</option><option value="🌹">🌹 Rose</option><option value="💙">💙 Blue heart</option><option value="🔥">🔥 Energy</option><option value="💪">💪 Strength</option><option value="🎉">🎉 Celebration</option><option value="🌈">🌈 Good vibes</option><option value="🌙">🌙 Night</option><option value="🌟">🌟 Star</option>
+</select>
+<label for="quote">Inspirational quote (optional)</label>
+<select id="quote">
+<option value="">No quote</option>
+<option value="Small steps every day can lead to big changes.">Small steps, big changes</option>
+<option value="Believe in your journey. Your story is still unfolding.">Believe in your journey</option>
+<option value="Kapag may tiyaga at tiwala sa sarili, may pag-asang marating ang pangarap.">Tiyaga at tiwala</option>
+<option value="Every sunrise is another chance to begin again.">A new beginning</option>
+<option value="Your kindness is a strength. Never be afraid to share it.">Choose kindness</option>
+<option value="Hindi kailangang maging perpekto; ang mahalaga ay patuloy kang sumusubok.">Patuloy lang</option>
+<option value="Let your courage be louder than your fear.">Courage over fear</option>
+<option value="Be proud of how far you have come, and keep moving forward.">Be proud, keep going</option>
+</select>
 <label for="custom">Add your own thought (optional)</label>
 <input id="custom" maxlength="180" list="thoughtIdeas" placeholder="Pumili o sumulat ng sariling thought"><datalist id="thoughtIdeas"><option value="Ingat ka palagi at God bless!"><option value="Proud ako sa iyo. Keep going!"><option value="Salamat sa pagiging mabuting kaibigan."><option value="Sana matupad ang mga pangarap mo."><option value="Nandito lang ako kung kailangan mo ng kausap."><option value="You deserve happiness and success."><option value="Keep smiling and stay positive!"><option value="Wishing you peace, love, and good health."></datalist>
 <button type="button" onclick="makeMessage()">GENERATE CYBER MESSAGE</button>
@@ -99,11 +115,15 @@ updateMessageChoices();
 function makeMessage(){
  const name=$("recipient").value.trim();
  const extra=$("custom").value.trim();
+ const emoji=$("emoji").value;
+ const quote=$("quote").value;
  const hello=name?"Hello, "+name+"!":"Hello there!";
  const key=$("style").value;
  const choices=messageChoices[key]||messageChoices.glitch;
  let result=choices[Number($("version").value)||0];
  result=result.replaceAll("{hello}",hello).replaceAll("{upperName}",name?" "+name.toUpperCase():"");
+ if(emoji)result+=" "+emoji;
+ if(quote)result+="\n\n💬 Inspirational Quote:\n“"+quote+"”";
  if(extra)result+="\n\n"+extra;
  result+="\n\n— MY CYBER LAB";
  $("message").value=result;
