@@ -336,7 +336,8 @@ async function createAutumnVideo() {
       await ffmpeg.exec([
         "-i","input.webm",
         "-c:v","mpeg4",
-        "-preset","ultrafast",
+        "-q:v","5",
+        "-threads","1",
         "-pix_fmt","yuv420p",
         "-movflags","+faststart",
         "-an",
