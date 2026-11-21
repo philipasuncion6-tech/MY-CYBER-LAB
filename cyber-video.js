@@ -319,9 +319,9 @@ async function createAutumnVideo() {
       status.textContent = "⏳ Loading FFmpeg engine...";
 
       await ffmpeg.load({
-        coreURL: "http://127.0.0.1:8080/ffmpeg-core-esm.js",
-        wasmURL: "http://127.0.0.1:8080/ffmpeg-core-esm.wasm",
-        classWorkerURL: "http://127.0.0.1:8080/814.ffmpeg.js"
+        coreURL: new URL("./ffmpeg-core-esm.js", window.location.href).href,
+        wasmURL: new URL("./ffmpeg-core-esm.wasm", window.location.href).href,
+        classWorkerURL: new URL("./814.ffmpeg.js", window.location.href).href
       });
 
       status.textContent = "⏳ FFmpeg loaded. Preparing video...";
