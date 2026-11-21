@@ -1,310 +1,381 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090f20">
-<title>MY CYBER LAB - Cyber Message Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY CYBER LAB - Autumn Leaves Message Studio</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:20px;font-family:Arial,sans-serif;color:#f8fafc;background:radial-gradient(circle at 15% 0%,#243d78 0,#101a38 38%,#070b18 100%);min-height:100vh}
-main{position:relative;overflow:hidden;max-width:620px;margin:24px auto;padding:24px;background:linear-gradient(145deg,#142544ee,#10152dee);border:1px solid #5377b5;border-radius:22px;box-shadow:0 0 32px #0ea5e944,0 0 70px #8b5cf622}
-main:before{content:"";position:absolute;top:-45%;left:-70%;width:45%;height:190%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,#ffffff12,transparent);animation:lightSweep 8s ease-in-out infinite;pointer-events:none}
-@keyframes lightSweep{0%,35%{left:-75%}75%,100%{left:135%}}
-h1{text-align:center;color:#a5f3fc;letter-spacing:1.5px;text-shadow:0 0 10px #06b6d4,0 0 24px #3b82f6}
-h2{text-align:center;margin-top:4px;color:#e9d5ff;text-shadow:0 0 14px #a78bfa}
-.intro,.note{color:#d4e3fa;line-height:1.55}
-label{display:block;margin:16px 0 7px;font-weight:bold;color:#c4e8ff}
-input,select,textarea{width:100%;padding:13px;border:1px solid #5877a5;border-radius:10px;background:#08152b;color:#fff;font:inherit;transition:border-color .25s,box-shadow .25s,transform .25s}
-input:focus,select:focus,textarea:focus{outline:none;border-color:#67e8f9;box-shadow:0 0 0 3px #22d3ee22,0 0 18px #22d3ee33}
-textarea{min-height:170px;resize:vertical;line-height:1.6}
-button{position:relative;overflow:hidden;width:100%;padding:14px;margin-top:13px;border:1px solid #dbeafe55;border-radius:11px;font-weight:bold;font-size:15px;color:#071326;background:linear-gradient(100deg,#67e8f9,#a5b4fc,#f0abfc,#67e8f9);background-size:220% 100%;box-shadow:0 5px 20px #38bdf833;cursor:pointer;transition:transform .25s,box-shadow .25s,background-position .5s}
-button:hover{transform:translateY(-2px);box-shadow:0 8px 26px #67e8f966;background-position:100% 0}
-button.secondary{background:linear-gradient(100deg,#1d3558,#263f70);background-size:200% 100%;color:#e0f2fe;border:1px solid #6b91c9}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.actions button{margin-top:10px}
-.panel{position:relative;margin-top:18px;padding:15px;border-radius:15px;overflow:hidden}
-.message-panel{border:1px solid #38bdf899;background:linear-gradient(135deg,#0b2944,#17244b);box-shadow:inset 0 0 22px #38bdf51c,0 0 22px #0ea5e922}
-.ai-panel{border:1px solid #c084fc88;background:linear-gradient(135deg,#251743,#17264b);box-shadow:inset 0 0 22px #c084fc1c,0 0 22px #a855f722}
-.panel-heading{font-weight:800;letter-spacing:.7px;margin:0 0 8px;color:#a5f3fc;text-shadow:0 0 12px #22d3ee88}
-.ai-panel .panel-heading{color:#e9d5ff;text-shadow:0 0 12px #c084fc88}
-.panel-hint{font-size:12px;color:#cbd5e1;margin:0 0 10px}
-.panel textarea{background:#061326dd;border-color:#4c83b8}
-.ai-panel textarea{background:#100d27dd;border-color:#8862b8}
-small{color:#c4b5fd}
-#status{min-height:22px;color:#86efac}
-footer{margin-top:18px;font-size:12px;color:#a5b4fc;text-align:center;line-height:1.5}
-.live-emoji{display:flex;justify-content:center;gap:18px;margin:8px 0 14px;font-size:25px}
-.live-emoji span{display:inline-block;animation:emojiFloat 2.8s ease-in-out infinite;filter:drop-shadow(0 0 8px #67e8f9aa)}
-.live-emoji span:nth-child(2){animation-delay:.35s}.live-emoji span:nth-child(3){animation-delay:.7s}.live-emoji span:nth-child(4){animation-delay:1.05s}.live-emoji span:nth-child(5){animation-delay:1.4s}
-@keyframes emojiFloat{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 5px #67e8f988)}50%{transform:translateY(-9px) scale(1.16);filter:drop-shadow(0 0 13px #f0abfc)}}
-.animated-preview{position:relative;isolation:isolate;min-height:90px;margin:10px 0 14px;padding:14px;border:1px solid #67e8f9aa;border-radius:12px;background:linear-gradient(120deg,#07172d,#17264b,#21183e);color:#e0f2fe;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 0 18px #38bdf533,0 0 16px #22d3ee33}
-.animated-preview:before{content:"";position:absolute;z-index:0;top:0;left:-45%;width:34%;height:100%;background:linear-gradient(90deg,transparent,#67e8f955,#f0abfc88,transparent);transform:skewX(-18deg);animation:previewSweep 3.2s ease-in-out infinite;pointer-events:none}
-@keyframes previewSweep{0%{left:-45%}65%,100%{left:120%}}
-.animated-preview .letter{position:relative;z-index:1;display:inline-block;opacity:0;transform:translateY(8px);animation:letterReveal .55s ease forwards,letterPulse 2.6s ease-in-out infinite;animation-delay:var(--delay),calc(var(--delay) + .55s);text-shadow:0 0 9px #67e8f9aa}
-@keyframes letterReveal{to{opacity:1;transform:translateY(0)}}
-@keyframes letterPulse{0%,100%{text-shadow:0 0 5px #67e8f988}50%{text-shadow:0 0 13px #67e8f9,0 0 20px #c084fc;color:#fff}}
-.animated-preview .emoji-letter{animation:emojiPop 1.65s ease-in-out infinite;animation-delay:var(--delay);filter:drop-shadow(0 0 9px #f0abfc)}
-@keyframes emojiPop{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.22)}}
-.preview-caption{font-size:11px;color:#a5f3fc;letter-spacing:1px;text-transform:uppercase;margin:8px 0 4px}
-.panel-heading{animation:headingPulse 3.5s ease-in-out infinite}
-@keyframes headingPulse{0%,100%{text-shadow:0 0 8px #22d3ee55}50%{text-shadow:0 0 18px #22d3ee,0 0 30px #a78bfa}}
-@media(prefers-reduced-motion:reduce){.panel-heading{animation:none!important}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+body{
+ margin:0;min-height:100vh;padding:20px;
+ font-family:Georgia,serif;color:#fff4df;
+ background:linear-gradient(145deg,#21140d,#60351c,#a65d24);
+ overflow-x:hidden
+}
+.container{max-width:850px;margin:auto;text-align:center}
+h1{color:#ffc56b;text-shadow:0 0 15px #d97824;font-size:2rem}
+h2{color:#ffe0a3;letter-spacing:2px}
+.intro{color:#f5d4a2}
+.panel{
+ background:rgba(35,18,9,.78);border:1px solid #c47a36;
+ border-radius:20px;padding:20px;margin:18px 0;
+ box-shadow:0 8px 25px #160b08
+}
+input,select,textarea{
+ width:100%;padding:13px;margin:8px 0;border-radius:10px;
+ border:1px solid #d99a52;background:#fff4df;color:#422411;
+ font-size:16px
+}
+button{
+ border:0;border-radius:25px;padding:12px 18px;margin:5px;
+ background:linear-gradient(120deg,#f2bd65,#a94d1d);
+ color:#291408;font-weight:bold;font-size:15px;cursor:pointer
+}
+button:hover{filter:brightness(1.15)}
+#leafGarden{
+ min-height:250px;position:relative;overflow:hidden;
+ display:flex;flex-direction:column;align-items:center;
+ justify-content:center;gap:12px;padding:35px 10px
+}
+
+
+
+
+.leaf-line{
+ position:relative;
+ isolation:isolate;
+ width:min(100%,430px);
+ aspect-ratio:1 / 1;
+ height:auto;
+ min-height:0;
+ margin:12px auto;
+ padding:0;
+ box-sizing:border-box;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ animation:leafAppear 1s ease both;
+}
+.heart-art{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ z-index:0;
+ pointer-events:none;
+}
+.heart-writing{
+ position:relative;
+ z-index:2;
+ width:65%;
+ height:43%;
+ margin-top:5%;
+ padding:12px 8px;
+ box-sizing:border-box;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow-y:auto;
+ outline:none;
+ white-space:pre-wrap;
+ overflow-wrap:anywhere;
+ text-align:center;
+ color:#fff8e9;
+ font-family:Georgia,serif;
+ font-size:clamp(14px,3.5vw,19px);
+ font-weight:bold;
+ font-style:italic;
+ line-height:1.4;
+ text-shadow:0 2px 5px #650b20;
+ cursor:text;
+}
+.heart-writing:focus{
+ text-shadow:0 2px 6px #650b20,0 0 8px #ffe2a0;
+}
+
+@keyframes leafAppear{
+ from{opacity:0;transform:translateY(25px) rotate(-8deg) scale(.8)}
+ to{opacity:1;transform:translateY(0) rotate(0) scale(1)}
+}
+@keyframes appear{
+ from{opacity:0;transform:translateY(18px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.falling{
+ position:fixed;top:-40px;z-index:5;pointer-events:none;
+ animation:fall linear infinite
+}
+@keyframes fall{
+ 0%{transform:translateY(-30px) rotate(0deg);opacity:0}
+ 10%{opacity:1}
+ 100%{transform:translateY(110vh) rotate(540deg);opacity:0}
+}
+footer{padding:25px;color:#f6c77f;font-style:italic}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 </head>
 <body>
-<main>
-<h1>⚡ MY CYBER LAB ⚡</h1>
-<h2>CYBER MESSAGE STUDIO</h2>
-<div class="live-emoji" aria-label="Animated emojis"><span>✨</span><span>💙</span><span>😊</span><span>🌟</span><span>🚀</span></div>
-<p class="intro">Create a unique cyber-style message, personalize it, then copy or share it with your friends.</p>
-<label for="recipient">Recipient name (optional)</label>
-<input id="recipient" maxlength="40" list="recipientIdeas" placeholder="Pumili o ilagay ang pangalan / tawag"><datalist id="recipientIdeas"><option value="Friend"><option value="Best Friend"><option value="Wife"><option value="Husband"><option value="Hubby"><option value="Hon"><option value="At"><option value="Saka"><option value="Tol"><option value="LARNZ"><option value="FEBZ"><option value="Hannah"><option value="King"><option value="Papa"><option value="Mama"><option value="Mom"><option value="Dad"><option value="Brother"><option value="Sister"><option value="Family"><option value="Love"><option value="Child"><option value="Son"><option value="Daughter"><option value="Cousin"><option value="Classmate"><option value="Teacher"></datalist>
-<label for="style">Choose message style</label>
+<div class="container">
+<h1>🍁 MY CYBER LAB 🍁</h1>
+<h2>AUTUMN LEAVES MESSAGE STUDIO</h2>
+<p class="intro">Let your heartfelt message bloom among the autumn leaves.</p>
+
+<div class="panel">
+<input id="recipient" placeholder="Who is your message for?">
 <select id="style">
-<option value="glitch">Neon Glitch</option>
-<option value="friendly">Friendly Greeting</option>
-<option value="encourage">Motivation / Encouragement</option>
-<option value="birthday">Birthday Celebration</option>
+<option value="good">Good Morning</option>
+<option value="love">Love & Friendship</option>
+<option value="inspire">Inspiration</option>
+<option value="birthday">Birthday Wishes</option>
 <option value="thanks">Thank You</option>
 <option value="goodnight">Good Night</option>
 </select>
-<label for="version">Choose a message (optional)</label>
-<select id="version"><option value="0">Message 1</option><option value="1">Message 2</option><option value="2">Message 3</option></select>
-<label for="emoji">Add an emoji (optional)</label>
-<select id="emoji">
-<option value="">No extra emoji</option><option value="✨">✨ Sparkle</option><option value="❤️">❤️ Love</option><option value="😊">😊 Smile</option><option value="🙏">🙏 Gratitude / Prayer</option><option value="🌹">🌹 Rose</option><option value="💙">💙 Blue heart</option><option value="🔥">🔥 Energy</option><option value="💪">💪 Strength</option><option value="🎉">🎉 Celebration</option><option value="🌈">🌈 Good vibes</option><option value="🌙">🌙 Night</option><option value="🌟">🌟 Star</option>
-</select>
-<label for="quote">Inspirational quote (optional)</label>
-<select id="quote">
-<option value="">No quote</option>
-<option value="Small steps every day can lead to big changes.">Small steps, big changes</option>
-<option value="Believe in your journey. Your story is still unfolding.">Believe in your journey</option>
-<option value="Kapag may tiyaga at tiwala sa sarili, may pag-asang marating ang pangarap.">Tiyaga at tiwala</option>
-<option value="Every sunrise is another chance to begin again.">A new beginning</option>
-<option value="Your kindness is a strength. Never be afraid to share it.">Choose kindness</option>
-<option value="Hindi kailangang maging perpekto; ang mahalaga ay patuloy kang sumusubok.">Patuloy lang</option>
-<option value="Let your courage be louder than your fear.">Courage over fear</option>
-<option value="Be proud of how far you have come, and keep moving forward.">Be proud, keep going</option>
-<option value="You are stronger than you think, braver than you feel, and more capable than you know.">Stronger than you think</option>
-<option value="Every day may not be good, but there is something good in every day.">Find the good each day</option>
-<option value="Your dreams are worth the patience, effort, and courage it takes to reach them.">Keep chasing your dreams</option>
-<option value="Sa bawat pagsubok, may aral; sa bawat pagbangon, may bagong pag-asa.">Pag-asa sa bawat pagsubok</option>
-<option value="Huwag mong ikumpara ang iyong simula sa gitna ng paglalakbay ng iba.">Sarili mong panahon</option>
-<option value="Dahan-dahan man ang progreso, mahalaga ay hindi ka sumusuko.">Huwag sumuko</option>
-<option value="May liwanag pagkatapos ng dilim. Magtiwala at magpatuloy.">May liwanag sa dulo</option>
-<option value="Choose hope, practice kindness, and give yourself permission to grow.">Choose hope and grow</option>
-<option value="You do not have to have everything figured out today. Just take the next kind step.">One step at a time</option>
-<option value="Ang tunay na lakas ay ang patuloy na bumangon kahit ilang beses nang nadapa.">Lakas ng loob</option>
-</select>
-<label for="custom">Add your own thought (optional)</label>
-<input id="custom" maxlength="180" list="thoughtIdeas" placeholder="Pumili o sumulat ng sariling thought"><datalist id="thoughtIdeas"><option value="Ingat ka palagi at God bless!"><option value="Proud ako sa iyo. Keep going!"><option value="Salamat sa pagiging mabuting kaibigan."><option value="Sana matupad ang mga pangarap mo."><option value="Nandito lang ako kung kailangan mo ng kausap."><option value="You deserve happiness and success."><option value="Keep smiling and stay positive!"><option value="Wishing you peace, love, and good health."></datalist>
-<button type="button" onclick="makeMessage()">GENERATE CYBER MESSAGE</button>
-<section class="panel message-panel" aria-labelledby="messageHeading">
-<p class="panel-heading" id="messageHeading">📩 MESSAGE TO RECIPIENT</p>
-<p class="panel-hint">Ito ang mensaheng gagawin at ipapadala mo. Maaari mo pa itong i-edit.</p>
-<label for="message">Your message — you can edit it</label>
-<p class="preview-caption">✨ Live animated preview</p>
-<div id="animatedPreview" class="animated-preview" aria-live="polite">Your generated message will appear here. ✨</div>
-<textarea id="message" maxlength="1200" placeholder="Your generated message will appear here."></textarea>
-</section>
-<section class="panel ai-panel" aria-labelledby="aiHeading">
-<p class="panel-heading" id="aiHeading">🤖 AI RESPONSE</p>
-<p class="panel-hint">I-paste rito ang sagot na natanggap mo mula sa AI para hiwalay at madaling basahin. Hindi ito awtomatikong konektado sa AI.</p>
-<label for="aiReply">AI reply (optional)</label>
-<textarea id="aiReply" maxlength="2000" placeholder="Paste the AI response here..."></textarea>
-</section>
-<div class="actions">
-<button class="secondary" type="button" onclick="copyMessage()">COPY MESSAGE</button>
-<button type="button" onclick="shareMessage()">SHARE MESSAGE</button>
+<textarea id="custom" rows="3" placeholder="Write your own heartfelt message..."></textarea>
+<button onclick="makeMessage()">🍁 Create Message</button>
 </div>
-<div class="actions">
-<button type="button" onclick="createAnimatedGif()">CREATE ANIMATED GIF</button>
-<button class="secondary" type="button" onclick="shareAnimatedGif()">SHARE GIF</button>
+
+<div class="panel">
+<h2>🍂 YOUR AUTUMN MESSAGE 🍂</h2>
+<div id="leafGarden">
+<div class="leaf-line" contenteditable="true" role="textbox" aria-label="Write your message on the autumn leaf" spellcheck="true">Your beautiful message will appear here.</div>
 </div>
-<p class="panel-hint">Gumagawa ito ng tunay na animated GIF file. Sa Android share menu, piliin ang Messenger o Messages kung available. Para sa SMS, text lang ang suportado; kailangan ng MMS para sa larawan/GIF.</p>
-<button class="secondary" type="button" onclick="openSMS()">OPEN SMS APP</button>
-<p id="status" role="status" aria-live="polite"></p>
-<p class="note"><small>Sharing opens your device's share menu. Choose Messenger if it is available. SMS opens your messaging app with the text prepared; you must review and press Send yourself.</small></p>
-<footer>MY CYBER LAB • CREATE • CONNECT • SHARE<br>Send respectful messages only to people who welcome them.</footer>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+<textarea id="message" rows="5" hidden></textarea>
+<button onclick="copyMessage()">📋 Copy</button>
+<button onclick="shareMessage()">💌 Share</button>
+<button onclick="chooseAutumnVideo()">💌 SEND TO SPARKLE STUDIO</button>
+<input id="autumnVideoPicker" type="file" accept="video/*,.mp4" hidden>
+<button id="shareSelectedVideo" onclick="shareSelectedVideo()" style="display:none;">📤 SHARE VIDEO</button>
+<button onclick="createAutumnVideo()">🎬 CREATE AUTUMN VIDEO</button>
+<button onclick="makeMessage()">✨ Create Again</button>
+<p id="status">Let your words fall like beautiful autumn leaves.</p>
+</div>
+<footer>Created with ❤️ by Asuncion</footer>
+</div>
+
 <script>
-let latestGifBlob=null;
-let latestGifUrl=null;
-const $=id=>document.getElementById(id);
-const messageChoices={
- glitch:[
-  "╔══ ⚡ CYBER SIGNAL ⚡ ══╗\n{hello}\nA little positive energy is heading your way. Stay curious, stay brilliant, and keep shining in your own way. ✨\n╚══ TRANSMISSION COMPLETE ══╝",
-  "⚡ SYSTEM ONLINE: GOOD VIBES\n{hello}\nSending you strength, courage, and a fresh burst of inspiration. Keep being uniquely you! 💫",
-  "💻 MESSAGE RECEIVED\n{hello}\nYour next chapter can be amazing. Keep learning, keep growing, and never stop believing in yourself. 🚀"
- ],
- friendly:[
-  "🌈 {hello}\nHope your day brings you smiles, good news, and plenty of reasons to be happy. Sending good vibes your way! 💙",
-  "☀️ {hello}\nJust stopping by to say hello. Hope everything is going well and that something wonderful happens today!",
-  "😊 {hello}\nMay your day be light, your heart be happy, and your worries be few. Have a lovely day!"
- ],
- encourage:[
-  "🚀 {hello}\nKeep moving forward. Every small step is progress, every challenge is a lesson, and your effort matters. You can do this! 💪",
-  "🌟 {hello}\nDo not give up on yourself. You are learning, growing, and getting stronger with every step. One day at a time!",
-  "🔥 {hello}\nHard days do not last forever. Trust your effort, believe in your ability, and keep going. Your story is still being written!"
- ],
- birthday:[
-  "🎉 HAPPY BIRTHDAY{upperName}! 🎂\nWishing you a bright year filled with happiness, good health, new adventures, and dreams coming true. 🌟",
-  "🥳 HAPPY BIRTHDAY{upperName}!\nMay your special day be full of laughter, love, wonderful surprises, and unforgettable memories!",
-  "🎂 Cheers to another year{upperName}!\nMay you receive countless blessings and have the courage to chase every dream. Enjoy your day!"
- ],
- thanks:[
-  "💙 {hello}\nJust sending a special thank-you. Your kindness and support mean a lot. Keep being awesome! 🙏",
-  "🌷 {hello}\nThank you for being there and for the little things you do. I appreciate you more than words can say.",
-  "✨ {hello}\nMaraming salamat sa oras, tulong, at kabutihan mo. Hindi ko iyon nakakalimutan. I truly appreciate you!"
- ],
- goodnight:[
-  "🌙 {hello}\nPower down the worries, recharge your energy, and wake up ready for a fresh new day. Sweet dreams! ✨",
-  "🌌 {hello}\nGood night! Iwan muna ang pagod at alalahanin. Pahinga nang mabuti at sana maganda ang panaginip mo.",
-  "💤 {hello}\nMay your night be peaceful and your tomorrow brighter. Sleep well and take care always!"
- ]
+const greetings={
+good:"Good morning! May your day be filled with peace, happiness, and beautiful blessings.",
+love:"Like autumn leaves, may our friendship bring warmth and beauty to every season.",
+inspire:"Every falling leaf reminds us that change can be beautiful. Keep growing and believing.",
+birthday:"Wishing you a wonderful birthday filled with love, laughter, and countless blessings!",
+thanks:"Thank you for being a beautiful part of life's journey. Your kindness means so much.",
+goodnight:"May the quiet beauty of the night bring you peace, sweet dreams, and a fresh tomorrow."
 };
-function updateMessageChoices(){
- const choices=messageChoices[$("style").value]||messageChoices.glitch;
- $("version").innerHTML=choices.map((_,i)=>'<option value="'+i+'">Message '+(i+1)+'</option>').join("");
-}
-$("style").addEventListener("change",updateMessageChoices);
-updateMessageChoices();
-function renderAnimatedPreview(value){
- const preview=$("animatedPreview");
- preview.textContent="";
- if(!value){preview.textContent="Your generated message will appear here. ✨";return;}
- const chars=typeof Intl!=="undefined"&&Intl.Segmenter?Array.from(new Intl.Segmenter(undefined,{granularity:"grapheme"}).segment(value),part=>part.segment):Array.from(value);
- chars.forEach((char,index)=>{
-  if(char==="\n"){preview.appendChild(document.createElement("br"));return;}
-  const span=document.createElement("span");
-  const isEmoji=/\p{Extended_Pictographic}/u.test(char);
-  span.className=isEmoji?"letter emoji-letter":"letter";
-  span.style.setProperty("--delay",((index%35)*24)+"ms");
-  span.textContent=char===" "?"\u00a0":char;
-  preview.appendChild(span);
- });
-}
-$("message").addEventListener("input",()=>renderAnimatedPreview($("message").value));
+
 function makeMessage(){
- const name=$("recipient").value.trim();
- const extra=$("custom").value.trim();
- const emoji=$("emoji").value;
- const quote=$("quote").value;
- const hello=name?"Hello, "+name+"!":"Hello there!";
- const key=$("style").value;
- const choices=messageChoices[key]||messageChoices.glitch;
- let result=choices[Number($("version").value)||0];
- result=result.replaceAll("{hello}",hello).replaceAll("{upperName}",name?" "+name.toUpperCase():"");
- if(emoji)result+=" "+emoji;
- if(quote)result+="\n\n💬 Inspirational Quote:\n“"+quote+"”";
- if(extra)result+="\n\n"+extra;
- result+="\n\n— MY CYBER LAB";
- $("message").value=result;
- renderAnimatedPreview(result);
- $("messageHeading").textContent="📩 MESSAGE TO "+(name?name.toUpperCase():"RECIPIENT");
- $("status").textContent="Your message is ready. You can edit it before sharing.";
+ const name=document.getElementById("recipient").value.trim();
+ const custom=document.getElementById("custom").value.trim();
+ const style=document.getElementById("style").value;
+ const greeting=greetings[style];
+ const result=(name?"Dear "+name+",\n\n":"")+ (custom||greeting);
+ document.getElementById("message").value=result;
+ displayLeaves(result);
+ document.getElementById("status").textContent="🍁 Your autumn message is ready!";
 }
-async function copyMessage(){
- const value=$("message").value.trim();
- if(!value){$("status").textContent="Generate or write a message first.";return;}
- try{await navigator.clipboard.writeText(value);$("status").textContent="Message copied!";}
- catch(e){$("message").focus();$("message").select();$("status").textContent="Select and copy the message manually.";}
-}
-async function shareMessage(){
- const value=$("message").value.trim();
- if(!value){$("status").textContent="Generate or write a message first.";return;}
- if(navigator.share){
-  try{await navigator.share({text:value});$("status").textContent="Share menu opened.";}
-  catch(e){if(e.name!=="AbortError")$("status").textContent="Sharing was not available. Use Copy Message instead.";}
- }else{$("status").textContent="Your browser does not support direct sharing. Use Copy Message, then paste it in Messenger.";}
-}
-function drawGifFrame(ctx,lines,width,height,frame){
- const bg=ctx.createLinearGradient(0,0,width,height);
- bg.addColorStop(0,"#07172d");bg.addColorStop(.55,"#17264b");bg.addColorStop(1,"#21183e");
- ctx.fillStyle=bg;ctx.fillRect(0,0,width,height);
- ctx.strokeStyle="#67e8f9";ctx.lineWidth=3;ctx.strokeRect(8,8,width-16,height-16);
- ctx.save();ctx.globalAlpha=.28;
- const sweepX=((frame/12)*width*1.5)-width*.25;
- const glow=ctx.createLinearGradient(sweepX-70,0,sweepX+70,0);
- glow.addColorStop(0,"rgba(103,232,249,0)");glow.addColorStop(.5,"rgba(240,171,252,.9)");glow.addColorStop(1,"rgba(103,232,249,0)");
- ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);ctx.restore();
- ctx.textAlign="center";ctx.textBaseline="middle";
- ctx.font="bold 22px Arial";ctx.fillStyle="#a5f3fc";ctx.shadowColor="#22d3ee";ctx.shadowBlur=14;
- ctx.fillText("⚡ MY CYBER LAB ⚡",width/2,42);
- ctx.shadowBlur=0;
- const lineHeight=34;const total=lines.length*lineHeight;
- let y=Math.max(90,(height-total)/2);
- ctx.font="bold 25px Arial";ctx.fillStyle="#f8fafc";ctx.shadowColor="#67e8f9";ctx.shadowBlur=frame%2?13:6;
- lines.forEach((line,i)=>ctx.fillText(line,width/2,y+i*lineHeight,width-48));
- ctx.shadowBlur=0;
- ctx.font="22px Arial";ctx.fillStyle="#e9d5ff";
- ctx.fillText(["✨","💙","🌟","🚀"][frame%4],width/2,height-38);
-}
-function wrapGifText(ctx,text,maxWidth){
- const words=text.split(/\s+/);const lines=[];let line="";
- words.forEach(word=>{
-  const test=line?line+" "+word:word;
-  if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}else line=test;
+
+
+
+function displayLeaves(value){
+ const garden=document.getElementById("leafGarden");
+ garden.innerHTML="";
+
+ const leaf=document.createElement("div");
+ leaf.className="leaf-line";
+
+ leaf.innerHTML=`
+ <svg class="heart-art" viewBox="0 0 500 500"
+      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+   <linearGradient id="bearFur" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#d99a58"/>
+    <stop offset="1" stop-color="#75401f"/>
+   </linearGradient>
+   <linearGradient id="heartRed" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#ff8290"/>
+    <stop offset=".45" stop-color="#e52d48"/>
+    <stop offset="1" stop-color="#9e102d"/>
+   </linearGradient>
+  </defs>
+
+  <!-- Teddy bear body and head -->
+  <ellipse cx="250" cy="390" rx="125" ry="105"
+           fill="url(#bearFur)" stroke="#60351e" stroke-width="7"/>
+  <circle cx="165" cy="75" r="48" fill="url(#bearFur)"
+          stroke="#60351e" stroke-width="7"/>
+  <circle cx="335" cy="75" r="48" fill="url(#bearFur)"
+          stroke="#60351e" stroke-width="7"/>
+  <circle cx="250" cy="125" r="105" fill="url(#bearFur)"
+          stroke="#60351e" stroke-width="7"/>
+  <circle cx="165" cy="75" r="23" fill="#edbd91"/>
+  <circle cx="335" cy="75" r="23" fill="#edbd91"/>
+  <ellipse cx="250" cy="155" rx="48" ry="36" fill="#f1c99f"/>
+  <circle cx="215" cy="118" r="10" fill="#28180f"/>
+  <circle cx="285" cy="118" r="10" fill="#28180f"/>
+  <ellipse cx="250" cy="145" rx="13" ry="10" fill="#4b241b"/>
+  <path d="M250 155 Q238 175 225 160 M250 155 Q262 175 275 160"
+        fill="none" stroke="#633321" stroke-width="5"
+        stroke-linecap="round"/>
+
+  <!-- Large heart held by the bear -->
+  <path d="M250 445
+   C210 408 65 310 65 220
+   C65 120 190 105 250 190
+   C310 105 435 120 435 220
+   C435 310 290 408 250 445 Z"
+   fill="url(#heartRed)" stroke="#8f172b" stroke-width="9"/>
+
+  <path d="M105 220 C110 160 170 145 210 170"
+        fill="none" stroke="#ffbdc5" stroke-width="9"
+        stroke-linecap="round" opacity=".7"/>
+
+  <!-- Teddy paws holding the heart -->
+  <ellipse cx="103" cy="295" rx="48" ry="38"
+           transform="rotate(-28 103 295)"
+           fill="url(#bearFur)" stroke="#60351e" stroke-width="6"/>
+  <ellipse cx="397" cy="295" rx="48" ry="38"
+           transform="rotate(28 397 295)"
+           fill="url(#bearFur)" stroke="#60351e" stroke-width="6"/>
+  <g fill="#edbd91">
+   <circle cx="91" cy="290" r="8"/>
+   <circle cx="111" cy="280" r="8"/>
+   <circle cx="389" cy="280" r="8"/>
+   <circle cx="409" cy="290" r="8"/>
+  </g>
+ </svg>
+
+ <div class="heart-writing" contenteditable="true"
+  role="textbox" aria-label="Write your message inside the teddy bear heart"
+  spellcheck="true"></div>
+ `;
+
+ const writing=leaf.querySelector(".heart-writing");
+ writing.textContent=value;
+
+ writing.addEventListener("input",()=>{
+  document.getElementById("message").value=writing.innerText;
  });
- if(line)lines.push(line);
- return lines.slice(0,30);
+
+ garden.appendChild(leaf);
+ document.getElementById("message").value=value;
 }
-let gifWorkerBlobUrl=null;
-async function getGifWorkerUrl(){
- if(gifWorkerBlobUrl)return gifWorkerBlobUrl;
- const workerResponse=await fetch("https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js",{cache:"force-cache"});
- if(!workerResponse.ok)throw new Error("Hindi ma-download ang GIF worker ("+workerResponse.status+").");
- const workerCode=await workerResponse.text();
- gifWorkerBlobUrl=URL.createObjectURL(new Blob([workerCode],{type:"text/javascript"}));
- return gifWorkerBlobUrl;
-}
-async function createAnimatedGif(){
- const textValue=$("message").value.trim();
- if(!textValue){$("status").textContent="Gumawa muna o magsulat ng mensahe.";return;}
- if(typeof GIF==="undefined"){$("status").textContent="Hindi ma-load ang GIF creator. Suriin ang internet connection at subukan ulit.";return;}
- $("status").textContent="Inihahanda ang GIF creator...";
+
+async function copyMessage(){
+ const value=document.getElementById("message").value;
+ if(!value){document.getElementById("status").textContent="Create a message first.";return;}
  try{
-  const workerUrl=await getGifWorkerUrl();
-  const canvas=document.createElement("canvas");canvas.width=600;
-  const measure=canvas.getContext("2d");measure.font="bold 25px Arial";
-  const lines=wrapGifText(measure,textValue,540);
-  canvas.height=Math.max(260,Math.min(1350,150+lines.length*38));
-  const ctx=canvas.getContext("2d");
-  const gif=new GIF({workers:2,quality:10,width:canvas.width,height:canvas.height,workerScript:workerUrl});
-  for(let frame=0;frame<12;frame++){drawGifFrame(ctx,lines,canvas.width,canvas.height,frame);gif.addFrame(ctx,{copy:true,delay:140});}
-  gif.on("finished",blob=>{
-   latestGifBlob=blob;
-   if(latestGifUrl)URL.revokeObjectURL(latestGifUrl);
-   latestGifUrl=URL.createObjectURL(blob);
-   const a=document.createElement("a");a.href=latestGifUrl;a.download="my-cyber-lab-message.gif";document.body.appendChild(a);a.click();a.remove();
-   $("status").textContent="Tapos na! Na-download ang animated GIF. Pindutin ang SHARE GIF para ipadala sa Messenger o compatible na app.";
-  });
-  gif.on("abort",()=>{$("status").textContent="Hindi natapos ang paggawa ng GIF. Subukan ulit.";});
-  gif.render();
- }catch(err){
-  console.error("GIF creation failed:",err);
-  $("status").textContent="GIF error: "+(err&&err.message?err.message:"Hindi ma-load ang GIF worker. Suriin ang internet at subukan ulit.");
+  await navigator.clipboard.writeText(value);
+  document.getElementById("status").textContent="Copied successfully! 🍁";
+ }catch(e){
+  document.getElementById("message").select();
+  document.execCommand("copy");
+  document.getElementById("status").textContent="Message selected for copying.";
  }
 }
-async function shareAnimatedGif(){
- if(!latestGifBlob){$("status").textContent="Pindutin muna ang CREATE ANIMATED GIF.";return;}
- const file=new File([latestGifBlob],"my-cyber-lab-message.gif",{type:"image/gif"});
- if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
-  try{await navigator.share({files:[file],title:"MY CYBER LAB animated message",text:"Made with MY CYBER LAB"});$("status").textContent="Binuksan ang share menu. Piliin ang Messenger o compatible na app.";}
-  catch(err){if(err.name!=="AbortError")$("status").textContent="Hindi ma-share ang GIF. Gamitin ang na-download na file at i-attach ito sa Messenger.";}
+
+async function shareMessage(){
+ const value=document.getElementById("message").value;
+ if(!value){document.getElementById("status").textContent="Create a message first.";return;}
+ if(navigator.share){
+  try{await navigator.share({title:"Autumn Message",text:value});}
+  catch(e){}
  }else{
-  $("status").textContent="Hindi suportado ng browser ang direct GIF sharing. Na-download na ang GIF; i-attach ito sa Messenger.";
-  if(latestGifUrl)window.open(latestGifUrl,"_blank");
+  copyMessage();
  }
 }
-function openSMS(){
- const value=$("message").value.trim();
- if(!value){$("status").textContent="Generate or write a message first.";return;}
- location.href="sms:?body="+encodeURIComponent(value);
+
+
+function chooseAutumnVideo(){
+ const picker=document.getElementById("autumnVideoPicker");
+ picker.value="";
+ picker.click();
 }
+
+let selectedAutumnVideo = null;
+
+document.getElementById("autumnVideoPicker").addEventListener("change", function(){
+ const file=this.files && this.files[0];
+ if(!file) return;
+
+ selectedAutumnVideo=file;
+
+ const btn=document.getElementById("shareSelectedVideo");
+ btn.style.display="inline-block";
+
+ document.getElementById("status").textContent=
+  "🍁 Video selected: "+file.name+" — press SHARE VIDEO.";
+});
+
+async function shareSelectedVideo(){
+ const file=selectedAutumnVideo;
+ const status=document.getElementById("status");
+
+ if(!file){
+  status.textContent="Select a video first.";
+  return;
+ }
+
+ if(!navigator.share){
+  status.textContent="Video sharing is not supported in this browser.";
+  return;
+ }
+
+ try{
+  if(navigator.canShare && !navigator.canShare({files:[file]})){
+   status.textContent="This video cannot be shared directly from Chrome.";
+   return;
+  }
+
+  await navigator.share({
+   files:[file],
+   title:"Autumn Video",
+   text:"🍁 My Autumn Message"
+  });
+
+  status.textContent="🍁 Video sharing opened!";
+ }catch(e){
+  if(e.name==="AbortError"){
+   status.textContent="Video sharing cancelled.";
+  }else{
+   status.textContent="❌ Video share error: "+(e.name||"Unknown")+" - "+(e.message||"No details");
+  }
+ }
+}
+
+async function sendToSparkle(){
+ const value=document.getElementById("message").value.trim();
+ if(!value){
+  document.getElementById("status").textContent="Create a message first.";
+  return;
+ }
+ window.open("https://m.me/sparkle.studio.2026","_blank");
+ try{
+  await navigator.clipboard.writeText(value);
+  document.getElementById("status").textContent="✅ Message copied! Paste it in Sparkle Studio Messenger.";
+ }catch(e){
+  document.getElementById("status").textContent="Open Messenger and copy your message using Copy.";
+ }
+}
+
+function fallingLeaves(){
+ const symbols=["🍁","🍂","🍃"];
+ const leaf=document.createElement("div");
+ leaf.className="falling";
+ leaf.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+ leaf.style.left=Math.random()*100+"vw";
+ leaf.style.fontSize=(18+Math.random()*20)+"px";
+ leaf.style.animationDuration=(7+Math.random()*8)+"s";
+ document.body.appendChild(leaf);
+ setTimeout(()=>leaf.remove(),16000);
+}
+setInterval(fallingLeaves,650);
 </script>
+  <script src="./cyber-video.js?v=20261126"
+onload="document.getElementById('status').textContent='✅ VIDEO SCRIPT LOADED!'"
+onerror="document.getElementById('status').textContent='❌ VIDEO SCRIPT FAILED TO LOAD!'"></script>
 </body>
 </html>
+
