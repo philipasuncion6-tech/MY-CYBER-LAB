@@ -310,10 +310,11 @@ async function createAutumnVideo() {
 
       ffmpeg.on("log", ({message}) => {
         console.log("FFmpeg:", message);
+        status.textContent = "FFmpeg LOG: " + message.slice(-120);
       });
 
       ffmpeg.on("progress", () => {
-        status.textContent = "🎬 MP4 encoding...";
+        console.log("FFmpeg encoding progress event");
       });
 
       status.textContent = "⏳ Loading FFmpeg engine...";
